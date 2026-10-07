@@ -55,8 +55,9 @@ public class AIService {
     private final ExchangeRepository exchangeRepository;
 
 
-    @Value("${}")
+    @Value("${apify.api-token:}")
     private String apifyApiToken;
+
 
 
     private final HttpClient apifyHttpClient = HttpClient.newBuilder().connectTimeout(Duration.ofSeconds(15)).build();
