@@ -1,6 +1,6 @@
-# Al-Owais Skill Exchange Platform
+# NAWELL | ناول
 
-Al-Owais is a skill-exchange platform that helps individuals and companies learn without relying only on paid lessons. Users earn tokens by teaching and spend them on learning. Skill verification, AI matching, date negotiation, sessions, and reviews help users find suitable providers and organize their exchanges.
+NAWELL | ناول is a skill-exchange platform that helps individuals and companies learn without relying only on paid lessons. Users earn tokens by teaching and spend them on learning. Skill verification, AI matching, date negotiation, sessions, and reviews help users find suitable providers and organize their exchanges.
 
 ## Main features
 
@@ -11,10 +11,11 @@ Al-Owais is a skill-exchange platform that helps individuals and companies learn
 - **Negotiations:** learners and providers exchange messages and propose dates; urgency and weekend rules can affect the token price.
 - **Exchanges:** participants create, accept, cancel, and complete exchanges, with token reservation, refunds, and provider credits.
 - **Agreements:** provider and learner acceptance flags, acceptance status, and AI-assisted agreement drafting.
-- **Sessions:** session creation, participant enrollment, attendance, offer/exchange lookups, and Zoom meeting creation.
+- **Sessions:** individual and group sessions, participant enrollment, attendance, offer/exchange lookups, and Zoom meeting creation.
 - **Reviews:** reviews between exchange participants, account review lists, and average ratings.
 - **Tokens:** balance, transaction history, teaching bonuses, refunds, and simulated purchase/redemption.
 - **Search:** find providers and learning requests by skill.
+- **Notifications:** email and WhatsApp updates for learning requests, negotiation messages, exchanges, and refunds; session emails and automated reminders.
 
 ## Typical learning journey
 
@@ -52,11 +53,23 @@ Purchase and redemption update local balances and transaction records. They do n
 | ---      | ---                                                                                                                                                                                                                         |
 | OpenAI   | Provider matching, match explanations, CV skill extraction, offer suggestions, skill relationships, related providers, assessment generation/evaluation, exchange fairness, agreement drafting, and LinkedIn skill matching |
 | Apify    | Retrieves LinkedIn profile data for the LinkedIn skill workflow                                                                                                                                                             |
-| Brevo    | Verification emails and token-operation notifications                                                                                                                                                                       |
+| Brevo    | Verification, learning-request, negotiation, exchange, token, and session emails, plus scheduled session reminders                                                                                                          |
 | Zoom     | OAuth token retrieval and meeting creation                                                                                                                                                                                  |
-| Ultramsg | WhatsApp API configuration contributed by Deema                                                                                                                                                                             |
+| Ultramsg | WhatsApp notifications for learning requests, negotiation messages, exchange creation/acceptance/cancellation, and cancellation refunds                                                                                     |
 
 The LinkedIn workflow uses Apify rather than the official LinkedIn API. AI feature routes include supporting import operations; not every route calls a model on every request.
+
+## Notification workflows
+
+- A new learning request notifies the provider by email and WhatsApp.
+- A negotiation response notifies the other participant by email and WhatsApp; proposal acceptance sends an email.
+- Exchange creation and acceptance notify the relevant participant by email and WhatsApp.
+- Cancellation sends participant updates and, when tokens were reserved, a WhatsApp refund confirmation to the learner.
+- New sessions notify learners with accepted or in-progress exchanges for the offer; joining sends a confirmation email.
+- Exchange completion sends completion emails to the learner and provider.
+- A scheduled job checks every minute and sends session reminder emails to enrolled learners during the hour before the session starts.
+
+Notifications run inside existing workflows or the scheduled reminder job. They are not separate HTTP endpoints.
 
 ## Technology and structure
 
@@ -89,8 +102,6 @@ Capstone_3/
 | Requests and exchanges  | LearningRequest, RequestNegotiation, Exchange    |
 | Agreements and sessions | Agreement, Session, SessionParticipant           |
 | Feedback and tokens     | Review, TokenTransaction                         |
-
-There are **15 entity classes**. The original 14 were extended with `RequestNegotiation` to store negotiation messages and date proposals.
 
 ## API conventions
 
@@ -127,11 +138,12 @@ The route inventory credits the first recorded introduction in Git. Later change
 
 **Integrations:** Brevo verification email, Apify LinkedIn scraping, and Zoom meeting creation. Apify-backed routes are included in the AI feature count.
 
+**Notification work:** email and WhatsApp updates for new learning requests, negotiation responses, exchange creation, acceptance, and cancellation; proposal acceptance emails and cancellation confirmation/refund emails.
+
 **Configuration ownership:** email API configuration used by the team.
 
 **Additional contributions:** shared account validation, token reservation/completion improvements, session/review ownership checks, integration safeguards, and merge/conflict resolution.
 
-**Git evidence:** `3734d02`, `91527ca`, `459eace`, `e92d76e`.
 
 | Basic CRUD | Extra | AI   | Other API | Total endpoints | Entity classes |
 | ---:       | ---:  | ---: | ---:      | ---:            | ---:           |
